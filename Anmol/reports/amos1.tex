@@ -1,0 +1,151 @@
+\documentclass[1p,preprint,12pt]{elsarticle1}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{natbib}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\bibliographystyle{unsrtnat}
+%\usepackage[titletoc]{appendix}
+\usepackage{geometry}
+\usepackage{cleveref}
+\usepackage{amsmath}
+\geometry{
+ left=20mm,
+ right=20mm,
+ top=30mm,
+ bottom=30mm,
+ }
+\lstset{frame=tb,
+  language=Python,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+\begin{document}
+\begin{frontmatter}
+
+\title{Solving a singular integral equation using Legendre polynomials}
+\begin{abstract}
+The governing equation of an elasto-static crack is a singular integral equation as derived by Broberg. It relates the stress in the material to the crack aperture. This is a very important problem in fracture mechanics and thus solving this equation has a wide range of applications. Here we attempt to solve this singular integral equation using Legendre Polynomials and this report describes in detail the procedure followed.
+\end{abstract}
+\author{Anmol Sahoo - 2013A4PS294G}
+\end{frontmatter}
+
+\section{Introduction}
+Broberg derived this equation for relating the crack separation and the stresses, which is a singular intergral equation.
+\begin{equation}\label{eq:1}
+			\frac{\partial v(x)}{\partial x} = \frac{-1}{2(1-k^2)G\sqrt{(x-b)(c-x)}}\left\{ \frac{1}{\pi}\int\limits_{b}^c \frac{\sigma_y^0(\xi)\sqrt{(\xi-b)(c-\xi)}}{\xi-x}\,d\xi \,\,+\,\, \sigma^{\infty}_{yy}[x-\frac{b+c}{2}]\right\}
+\end{equation}
+As the crack extends from \(-a\) to \(a\), replacing \(b\,=\,-a\) \& \(c\, =\,a \) and integrating \ref{1}, we get the expression for the crack separation as:
+\begin{equation*}
+			v(x) = \frac{-1}{2(1-k^2)G}\left \{\frac{1}{\pi}\,\int\limits_{-a}^x \frac{1}{\sqrt{a^2\,-\,x^2}}\left[\int\limits_{-a}^a \frac{\sigma_y^0(\xi)\sqrt{a^2\,-\,\xi^2}}{\xi-x}d\xi\right]dx \,\,+\,\, \int\limits_{-a}^x \frac{\sigma^{\infty}_{yy}\,x}{\sqrt{a^2-x^2}}\,dx\right\}
+		\end{equation*}
+
+Taking linear relation between stress and crack aperture, i.e. \(\sigma_y^0(\xi)\,=\,2\alpha v(\xi)\), we get,
+\begin{equation}\label{3}
+			v(x) = \frac{-1}{2(1-k^2)G}\left \{\frac{2\alpha}{\pi}\,\int\limits_{-a}^x \frac{1}{\sqrt{a^2\,-\,x^2}}\left[\int\limits_{-a}^a \frac{v(\xi)\sqrt{a^2\,-\,\xi^2}}{\xi-x}d\xi\right]dx \,\,+\,\, \int\limits_{-a}^x \frac{\sigma^{\infty}_{yy}\,x}{\sqrt{a^2-x^2}}\,dx\right\}
+		\end{equation}
+There is a Cauchy singularity in the first term of the R.H.S of \ref{3}, which does not allow us to analytically integrate the expression. The singular term is $$\frac{v(\xi)\sqrt{a^2\,-\,\xi^2}}{\xi-x}$$
+
+\section{Legendre Polynomials}
+The Legendre polynomials are a set of orthogonal polynomials which can be used to approximate the unknown function. Some special properties of Legendre polynomials can be used to remove the
+singularity which will then allow us to integrate the equation and find an approximate solution. One way of defining Legendre Polynomials is given below, and this is what we will use in 
+our treatment of the singularity.
+\begin{equation} \label{eq:3}
+	P_j(x) = \frac{1}{2^j}\sum_{k=0}^{\floor*{j/2}}\alpha_{k,j}x^{j-2k}
+\end{equation}
+where,
+\begin{equation} \label{eq:4}
+	\alpha_{k,j} = \frac{(-1)^{k}(2j-2k)!}{k!(j-k)!(j-2k)!}
+\end{equation}
+
+\section{Numerical Solution using Legendre Polynomials}
+To weaken the singularity we will first carry out a substitution which allows us to use the properties of the Legendre polynomials.
+\begin{equation}\label{5}
+\phi(x) = v(x)\sqrt{a^2-x^2}
+\end{equation}
+where $\phi(x)=0$ at $x=-a$ and $x=a$. Multiplying both sides of \ref{3} with $\sqrt{a^2-x^2}$, and carrying out the above substitution gives,
+\begin{equation}\label{3}
+			v(x)\sqrt{a^2-x^2} = \frac{-\sqrt{a^2-x^2}}{2(1-k^2)G}\left \{\frac{2\alpha}{\pi}\,\int\limits_{-a}^x \frac{1}{\sqrt{a^2\,-\,x^2}}\left[\int\limits_{-a}^a \frac{v(\xi)\sqrt{a^2\,-\,\xi^2}}{\xi-x}d\xi\right]dx \,\,+\,\, \int\limits_{-a}^x \frac{\sigma^{\infty}_{yy}\,x}{\sqrt{a^2-x^2}}\,dx\right\}
+\end{equation}
+\begin{equation}\label{3}
+			\phi(x) = \frac{-\sqrt{a^2-x^2}}{2(1-k^2)G}\left \{\frac{2\alpha}{\pi}\,\int\limits_{-a}^x \frac{1}{\sqrt{a^2\,-\,x^2}}\left[\int\limits_{-a}^a \frac{\phi(\xi)}{\xi-x}d\xi\right]dx \,\,+\,\, \int\limits_{-a}^x \frac{\sigma^{\infty}_{yy}\,x}{\sqrt{a^2-x^2}}\,dx\right\}
+\end{equation}
+Now we have to solve the above equation for $\phi(x)$. As cited in the paper by Abdou and Nasser, we carry out the following algebraic manipulation which let's us eliminate the singularity.
+\begin{equation}
+	\int\limits_{-a}^{a}\frac{\phi(\xi)}{\xi-x}d\xi = \int\limits_{-a}^{a}\frac{\phi(\xi) + \phi(x) - \phi(x)}{\xi-x}d\xi = \int\limits_{-a}^{a}\frac{\phi(\xi)-\phi(x)}{\xi-x}d\xi + \int\limits_{-a}^{a}\frac{\phi(x)}{\xi-x}d\xi
+\end{equation}
+We will now solve the first singular term of the integration using Legendre polynomials. Approximating the unknown function as a linear combination of N+1 Legendre polynomials we get,
+\begin{equation}
+\phi(x) \approx \sum\limits_{i=0}^{N}c_iP_i(x)
+\end{equation}
+where $P_i(x)$ is the Legendre Polynomial of order i.\\
+Substituting this expression into the first term of \ref{8},
+\begin{equation}
+\int\limits_{-a}^{a}\frac{\phi(\xi)-\phi(x)}{\xi-x}d\xi
+\end{equation}
+gives,
+\begin{equation}
+\int\limits_{-a}^{a}\frac{\sum\limits_{i=0}^{N}c_iP_i(\xi)-\sum\limits_{j=0}^{N}c_jP_j(x)}{\xi-x}d\xi
+\end{equation}
+As it is a linear combination of the polynomials, we can take $c's$ common from the respective polynomials of the same order, which gives
+\begin{equation}
+\sum\limits_{i=0}^{N}c_i\int\limits_{-a}^{a}\frac{P_i(\xi)-P_i(x)}{\xi-x}d\xi
+\end{equation}
+Substituting the expression for Legendre Polynomials that we have defined above,
+\begin{equation}
+\sum\limits_{i=0}^{N}c_i\int\limits_{-a}^{a}\frac{\frac{1}{2^i}\sum_{k=0}^{\floor*{i/2}}\alpha_{k,i}\xi^{i-2k}-\frac{1}{2^i}\sum_{k=0}^{\floor*{i/2}}\alpha_{k,i}x^{i-2k}}{\xi-x}d\xi
+\end{equation}
+Taking the constants outside the integral and re-arranging the terms,
+\begin{equation}
+\sum\limits_{i=0}^{N}\frac{c_i}{2^i}\sum\limits_{k=0}^{\floor*{i/2}}\alpha_{k,i}\int\limits_{-a}^{a}\frac{\xi^{i-2k}-x^{i-2k}}{\xi-x}d\xi
+\end{equation}
+Expanding the numerator as a binomial expansion and then cancelling out the common factor $\xi-x$ gives,
+\begin{equation}
+\sum\limits_{i=0}^{N}\frac{c_i}{2^i}\sum\limits_{k=0}^{\floor*{i/2}}\alpha_{k,i}\int\limits_{-a}^{a}\frac{(\xi-x)\sum\limits_{j=0}^{i-2k-1}x^j\xi^{i-2k-1-j}}{\xi-x}d\xi
+\end{equation}
+This gives,
+\begin{equation}
+\sum\limits_{i=0}^{N}\frac{c_i}{2^i}\sum\limits_{k=0}^{\floor*{i/2}}\alpha_{k,i}\sum\limits_{j=0}^{i-2k-1}x^j\int\limits_{-a}^{a}{\xi^{i-2k-1-j}}d\xi
+\end{equation}
+Integrating the last term gives us,
+\begin{equation}
+\sum\limits_{i=0}^{N}\frac{c_i}{2^i}\sum\limits_{k=0}^{\floor*{i/2}}\alpha_{k,i}\sum\limits_{j=0}^{i-2k-1}x^j\frac{\left[1^{i-2k-j} - (-1)^{i-2k-j}\right]}{i-2k-j}
+\end{equation}
+The singularity has been removed and we have an expression which we can substitute back into our integral. Re-arranging this expression now gives,
+\begin{equation}
+\sum\limits_{i=0}^{N}\sum\limits_{k=0}^{\floor*{i/2}}\sum\limits_{j=0}^{i-2k-1}c_i\beta_{i,j,k}x^j
+\end{equation}
+where, $$\beta_{i,j,k} = \frac{1}{2^i}\frac{\alpha_{k,i}[1-(-1)^{i-2k-j}]}{i-2k-j}$$
+Now we need to evaluate the second term of this integral, which is
+\begin{equation}
+\int\limits_{-a}^{a}\frac{\phi(x)}{\xi-x}d\xi
+\end{equation}
+As $\phi(x)$ is a function of x, we can take it out of the integral and we know that the integral has a standard analytical result,
+\begin{equation}
+\int\limits_{-a}^{a}\frac{\phi(x)}{\xi-x}d\xi = \phi(x)\int\limits_{-a}^{a}\frac{1}{\xi-x}d\xi = -\phi(x)\log{\frac{a+x}{a-x}}
+\end{equation}
+Substituting all the simplified expressions back into our original equation along with the approximation of $\phi(x)$ gives us,
+\begin{equation}\label{3}
+\begin{split}
+			\sum\limits_{i=0}^{N}c_iP_i(x) = &\frac{-\sqrt{a^2-x^2}}{2(1-k^2)G}\frac{2\alpha}{\pi}\,\int\limits_{-a}^x \frac{1}{\sqrt{a^2\,-\,x^2}}\left[\sum\limits_{i=0}^{N}\sum\limits_{k=0}^{\floor*{i/2}}\sum\limits_{j=0}^{i-2k-1}c_i\beta_{i,j,k}x^j - \sum\limits_{i=0}^{N}c_iP_i(x)\log{\frac{a+x}{a-x}}\right]dx \,\, + 
+\\ &\int\limits_{-a}^x \frac{\sigma^{\infty}_{yy}\,x}{\sqrt{a^2-x^2}}\,dx
+\end{split}
+\end{equation}
+Now the entire expression can be integrated numerically. Since we need to find the values of $c_i$, we can take the $c's$ common and substitute the values of functions at N+1 points for $-a<x<a$ and thus
+create a linear system of equations which can solved to find the required function. 
+\end{document}
